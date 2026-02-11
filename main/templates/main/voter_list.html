@@ -1,0 +1,138 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Voter List - Voting System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/voter_list.css' %}">
+<style>
+/* Inline fallback styles (move to main/static/css/voter_list.css if you prefer) */
+.voter-list-container {
+    max-width: 980px;
+    margin: 32px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(62,39,35,0.06);
+    padding: 22px;
+}
+.voter-list-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:16px;
+}
+.voter-list-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.voter-list-table th, .voter-list-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    vertical-align: middle;
+}
+.voter-list-table th {
+    background: #3E2723;
+    color: #fff;
+    font-weight: 600;
+}
+.special-id {
+    font-family: monospace;
+    background: #f6f6f6;
+    padding: 6px 8px;
+    border-radius: 6px;
+    color: #333;
+    font-size: 0.92rem;
+}
+.status-badge {
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:999px;
+    color:#fff;
+    font-weight:700;
+    font-size:0.85rem;
+}
+.status-badge.yes { background:#2e7d32; }
+.status-badge.no  { background:#c62828; }
+.empty-note { color:#666; font-style:italic; }
+
+/* small utility */
+.actions { display:flex; gap:8px; align-items:center; }
+.btn-primary {
+    background: #3E2723;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-decoration: none;
+}
+@media (max-width:720px) {
+    .voter-list-table th, .voter-list-table td { padding:10px 6px; font-size:0.95rem; }
+    .voter-list-container { padding: 16px; margin: 20px auto; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="voter-list-container">
+    <div class="voter-list-header">
+        <h2>Voters</h2>
+        <div class="actions">
+            <a href="{% url 'voter_list' %}" class="btn-primary">Refresh</a>
+            <a href="{% url 'voted_list' %}" class="btn-primary">Voted Users</a>
+        </div>
+    </div>
+
+    <table class="voter-list-table" role="table" aria-label="List of voters">
+        <thead>
+            <tr>
+                <th>Staff ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Special ID</th>
+                <th>Voted?</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if voters %}
+                {% for voter in voters %}
+                    <tr>
+                        <td>{{ voter.username }}</td>
+                        <td>{{ voter.first_name }}</td>
+                        <td>{{ voter.last_name }}</td>
+                        <td>
+                            {% if voter.voterprofile and voter.voterprofile.special_id %}
+                                <span class="special-id">{{ voter.voterprofile.special_id }}</span>
+                            {% else %}
+                                <span class="empty-note">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {# If your view passes `user_votes` mapping (user.id -> list of votes), use it. #}
+                            {% if user_votes %}
+                                {% with votes=user_votes|get_item:voter.id %}
+                                    {% if votes %}
+                                        <span class="status-badge yes">Yes</span>
+                                    {% else %}
+                                        <span class="status-badge no">No</span>
+                                    {% endif %}
+                                {% endwith %}
+                            {% else %}
+                                <span class="empty-note">Unknown</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5" class="empty-note">No voters found.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

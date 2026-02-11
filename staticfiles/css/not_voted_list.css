@@ -1,0 +1,74 @@
+.not-voted-list-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 28px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(62,39,35,0.06);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.not-voted-list-container h2 {
+    margin: 0 0 14px 0;
+    color: #3E2723;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+/* Table wrapper makes table horizontally scrollable on small screens */
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 12px;
+}
+
+/* Table styling */
+.not-voted-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 620px;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.not-voted-list-table th,
+.not-voted-list-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0efee;
+    text-align: left;
+    font-size: 0.98rem;
+    vertical-align: middle;
+}
+
+.not-voted-list-table thead th {
+    background: #3E2723;
+    color: #fff;
+    font-weight: 700;
+}
+
+.not-voted-list-table tbody tr:hover td {
+    background: #fbfaf8;
+}
+
+/* Empty state row */
+.no-data {
+    text-align: center;
+    color: #666;
+    padding: 18px 0;
+}
+
+/* Responsive tweaks */
+@media (max-width: 720px) {
+    .not-voted-list-container { padding: 16px; margin: 18px; }
+    .not-voted-list-table th, .not-voted-list-table td { padding: 10px 8px; font-size: 0.95rem; }
+    .not-voted-list-table { min-width: 520px; }
+}
+
+/* Accessibility focus */
+.not-voted-list-table tr:focus-within td,
+.not-voted-list-table tr:active td {
+    outline: none;
+    background: #fffaf6;
+}

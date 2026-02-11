@@ -1,0 +1,119 @@
+.candidate-voters-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 28px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(62,39,35,0.06);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Header row: photo + meta + small stat */
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.candidate-summary {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.candidate-photo {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 3px solid #3E2723;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+    flex: 0 0 96px;
+}
+
+.candidate-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.candidate-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #3E2723;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.candidate-position {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* small stat box */
+.stats { display:flex; gap:12px; align-items:center; }
+.stat-item { text-align: right; }
+.stat-value { font-weight:800; font-size:1.2rem; color:#3E2723; }
+.stat-label { font-size:0.9rem; color:#666; }
+
+/* Table wrapper to allow horizontal scroll on small screens */
+.table-wrap { width:100%; overflow-x:auto; }
+
+/* Table */
+.voters-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    min-width: 560px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.voters-table th,
+.voters-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0efee;
+    text-align: left;
+    vertical-align: middle;
+    font-size: 0.98rem;
+}
+
+.voters-table thead th {
+    background: #3E2723;
+    color: #fff;
+    font-weight: 700;
+}
+
+.voters-table tbody tr:hover td {
+    background: #fbfaf8;
+}
+
+/* Empty state */
+.no-voters {
+    text-align: center;
+    color: #666;
+    padding: 18px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 720px) {
+    .candidate-voters-container { padding: 14px; }
+    .candidate-photo { width: 78px; height: 78px; flex: 0 0 78px; }
+    .candidate-title { font-size: 1.05rem; }
+    .voters-table th, .voters-table td { padding: 10px 8px; font-size: 0.95rem; }
+}
+
+/* Accessibility focus */
+.voters-table tr:focus-within td,
+.voters-table tr:active td { outline: none; background: #fffaf6; }
+
+/* Small utility */
+.text-muted { color: #666; font-size: 0.95rem; }

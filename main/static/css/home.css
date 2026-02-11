@@ -1,0 +1,72 @@
+.homepage-container {
+    width: 100%;
+    max-width: 420px;
+    margin: 48px auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(62, 39, 35, 0.08);
+    text-align: center;
+    border: 2px solid #3E2723;
+    box-sizing: border-box;
+}
+
+.homepage-container h2 {
+    margin: 0 0 12px 0;
+    color: #3E2723;
+    font-size: 1.35rem;
+    line-height: 1.15;
+}
+
+.homepage-container p {
+    margin: 8px 0 18px 0;
+    color: #3E2723;
+    font-size: 1rem;
+}
+
+/* Button: full width on small screens for easy tapping */
+.btn {
+    display: inline-block;
+    width: 100%;
+    padding: 12px 20px;
+    background: #3E2723;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.06s;
+    box-shadow: 0 2px 6px rgba(62,39,35,0.08);
+    font-weight: 700;
+}
+
+.btn:hover { background: #4E342E; transform: translateY(-1px); }
+
+/* Small helper spacing */
+.homepage-actions { display: flex; gap: 12px; flex-direction: column; }
+
+/* Larger screens: widen container, place actions inline */
+@media (min-width: 720px) {
+    .homepage-container {
+        max-width: 720px;
+        padding: 32px 36px;
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        text-align: left;
+    }
+    .homepage-container h2 { font-size: 1.5rem; margin-bottom: 6px; }
+    .homepage-text { flex: 1 1 auto; }
+    .homepage-actions { flex: 0 0 260px; flex-direction: column; align-items: stretch; }
+    .btn { width: 100%; padding: 14px 20px; font-size: 1.03rem; }
+}
+
+/* Desktop: center content visually and balance */
+@media (min-width: 1024px) {
+    .homepage-container { max-width: 900px; padding: 36px 48px; }
+    .homepage-container h2 { font-size: 1.65rem; }
+}
+
+/* Ensure buttons are accessible (tap targets) */
+.btn:focus { outline: 3px solid rgba(62,39,35,0.12); outline-offset: 3px; }

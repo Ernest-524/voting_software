@@ -1,0 +1,126 @@
+/* Mobile-first responsive login styles */
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    margin: 56px auto;
+    padding: 24px;
+    background-color: #ffffff;
+    border: 1px solid #e6e6e6;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(62, 39, 35, 0.06);
+    box-sizing: border-box;
+}
+
+.login-container h2 {
+    color: #3E2723;
+    margin: 0 0 18px 0;
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 14px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    color: #3E2723;
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="search"],
+input[type="tel"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #fff;
+    transition: box-shadow 0.12s, border-color 0.12s;
+    box-sizing: border-box;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #4E342E;
+    box-shadow: 0 4px 12px rgba(78,52,46,0.08);
+    outline: none;
+}
+
+.form-note {
+    font-size: 0.88rem;
+    color: #666;
+    margin-top: 6px;
+}
+
+/* Login button */
+.btn-login {
+    width: 100%;
+    background-color: #3E2723;
+    color: #fff;
+    border: none;
+    padding: 12px 14px;
+    font-size: 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 800;
+    box-shadow: 0 6px 18px rgba(62,39,35,0.06);
+    transition: transform 0.06s, background 0.12s;
+}
+
+.btn-login:hover {
+    background-color: #4E342E;
+    transform: translateY(-1px);
+}
+
+/* Secondary link style */
+.form-links {
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    margin-top:12px;
+    font-size:0.9rem;
+    color:#4b4b4b;
+}
+
+.form-links a {
+    color: #3E2723;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.form-links a:hover { text-decoration: underline; }
+
+/* Error / success message inline for the form */
+.form-error {
+    color: #C62828;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+/* Larger screens: center box with slightly bigger width */
+@media (min-width: 720px) {
+    .login-container { max-width: 520px; padding: 32px; }
+    .login-container h2 { font-size: 1.35rem; }
+    .btn-login { padding: 12px 18px; font-size: 1.03rem; }
+}
+
+/* Desktop refinements */
+@media (min-width: 1024px) {
+    .login-container { max-width: 560px; padding: 36px; }
+    .login-container h2 { font-size: 1.45rem; }
+}
+
+/* Accessibility */
+input:focus, .btn-login:focus, a:focus { outline: 3px solid rgba(62,39,35,0.08); outline-offset: 3px; }

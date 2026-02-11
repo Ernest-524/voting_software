@@ -1,0 +1,34 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Manage Vote - Dashboard{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/manage_vote_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <h2>Vote Management Dashboard</h2>
+    <div class="dashboard-stats">
+        <a href="{% url 'voter_list' %}" style="text-decoration: none;">
+            <div class="stat-box stat-box-link">
+                <span class="stat-label">Total Voters</span>
+                <span class="stat-value">{{ total_voters }}</span>
+            </div>
+        </a>
+        <a href="{% url 'voted_list' %}" style="text-decoration: none;">
+            <div class="stat-box">
+                <span class="stat-label">Voted</span>
+                <span class="stat-value voted">{{ voted_count }}</span>
+            </div>
+        </a>
+        <a href="{% url 'not_voted_list' %}" style="text-decoration: none;">
+            <div class="stat-box stat-box-link">
+                <span class="stat-label">Yet to Vote</span>
+                <span class="stat-value not-voted">{{ not_voted_count }}</span>
+            </div>
+        </a>
+    </div>
+    <a href="{% url 'vote' %}" class="btn-vote">Vote</a>
+</div>
+{% endblock %}

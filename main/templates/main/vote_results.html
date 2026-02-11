@@ -1,0 +1,94 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Vote Results - Voting System{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/vote_results.css' %}">
+<style>
+    .vote-badges.multiple {
+        background-color: #e3f2fd;
+        padding: 5px 10px;
+        border-radius: 5px;
+        margin-top: 5px;
+    }
+    
+    .badge-selected {
+        background-color: #2196F3;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.9em;
+    }
+    
+    .percentage-display {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #2196F3;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="results-container">
+    <div class="results-header">
+        <h2>Vote Results by Position</h2>
+        <a href="{% url 'vote_results_pdf' %}" class="btn" target="_blank" rel="noopener">Export PDF</a>
+    </div>
+    
+    {% for result in results %}
+        <div class="position-block">
+            <h3>{{ result.position.position_name }}</h3>
+            {% if result.has_multiple %}
+                <p class="position-description">Multiple candidates - Voters selected one candidate</p>
+            {% else %}
+                <p class="position-description">Single candidate - Voters chose Yes or No</p>
+            {% endif %}
+            
+            <div class="candidate-grid">
+                {% for item in result.candidates %}
+                <a href="{% url 'candidate_voters' item.candidate.id %}" style="text-decoration: none;">
+                    <div class="candidate-card candidate-card-link">
+                        <img src="{{ item.candidate.photo.url }}" class="candidate-photo" alt="{{ item.candidate.candidate_name.first_name }}">
+                        <div class="candidate-name">
+                            {{ item.candidate.candidate_name.first_name }} {{ item.candidate.candidate_name.last_name }}
+                        </div>
+
+                        {% if item.is_multiple %}
+                            <div class="vote-badges multiple">
+                                <div class="badge badge-selected">Selected: {{ item.selected_count }}</div>
+                                {% if item.total_votes > 0 %}
+                                    <div class="percentage-display">
+                                        {{ item.selected_count|floatformat:0 }} / {{ item.total_votes }} votes
+                                        ({% widthratio item.selected_count item.total_votes 100 %}%)
+                                    </div>
+                                {% else %}
+                                    <div class="vote-stats">No votes yet</div>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="vote-badges">
+                                <div class="badge badge-yes">Yes {{ item.yes_count }}</div>
+                                <div class="badge badge-no">No {{ item.no_count }}</div>
+                            </div>
+
+                            <div class="vote-stats">
+                                {% if item.total > 0 %}
+                                    {{ item.total }} total votes
+                                    <div class="progress" aria-hidden="true">
+                                        <i style="{{ item.yes_style }}"></i>
+                                    </div>
+                                    <div class="percentage-text">{{ item.yes_pct }}% Yes</div>
+                                {% else %}
+                                    No votes yet
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

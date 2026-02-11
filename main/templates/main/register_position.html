@@ -1,0 +1,17 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/register_position.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="register-position-container">
+    <h2>Register New Position</h2>
+    <form action="#" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register Position</button>
+    </form>
+</div>
+{% endblock %}

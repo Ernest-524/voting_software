@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Voting System{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="header">
+        <div class="logo-section">
+            <img src="{% static 'images/logo.png' %}" alt="Company Logo" class="logo">
+            <h1 class="company-name">NASPA ELECTIONS</h1>
+        </div>
+        <nav class="nav-bar">
+    {% if user.is_authenticated %}
+        {% if user.is_superuser or user.is_staff %}
+            <a href="{% url 'admin_homepage' %}" class="nav-link">Home</a>
+        {% else %}
+            <a href="{% url 'user_homepage' %}" class="nav-link">Home</a>
+        {% endif %}
+        <a href="{% url 'logout' %}" class="nav-link logout-link">Logout</a>
+    {% endif %}
+</nav>
+    </header>
+    {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

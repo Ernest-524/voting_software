@@ -1,0 +1,116 @@
+/* Responsive dashboard stats */
+
+.dashboard-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 28px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(62,39,35,0.06);
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.dashboard-stats {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: stretch;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+/* each stat box */
+.stat-box {
+    background: #f9f6f2;
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 6px 18px rgba(62,39,35,0.04);
+    text-align: center;
+    flex: 1 1 180px;            /* grow, shrink, basis */
+    min-width: 160px;           /* avoid too small boxes */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.12s, box-shadow 0.12s;
+    border: 1px solid transparent;
+}
+
+.stat-box:hover,
+.stat-box:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(62,39,35,0.08);
+    border-color: rgba(62,39,35,0.04);
+}
+
+.stat-label {
+    display: block;
+    color: #3E2723;
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #3E2723;
+    line-height: 1;
+}
+
+.stat-value.voted { color: #388E3C; }
+.stat-value.not-voted { color: #C62828; }
+
+.stat-small {
+    font-size: 0.92rem;
+    color: #666;
+    margin-top: 6px;
+}
+
+/* CTA button */
+.btn-vote {
+    display: inline-block;
+    background: #3E2723;
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.12s, transform 0.06s, box-shadow 0.12s;
+    margin-top: 16px;
+    font-weight: 800;
+    box-shadow: 0 8px 20px rgba(62,39,35,0.06);
+    text-decoration: none;
+}
+.btn-vote:hover { background: #4E342E; transform: translateY(-2px); }
+.btn-vote:focus { outline: 3px solid rgba(62,39,35,0.08); outline-offset: 3px; }
+
+/* layout helper when there are many stat boxes: grid fallback */
+@media (min-width: 900px) {
+    .dashboard-stats { gap: 20px; }
+}
+
+@media (max-width: 720px) {
+    .dashboard-container { padding: 16px; margin: 18px; }
+    .stat-value { font-size: 1.6rem; }
+    .dashboard-stats { gap: 12px; }
+    .stat-box { padding: 14px; min-width: 100%; flex-basis: 100%; }
+    .btn-vote { width: 100%; padding: 14px; }
+}
+
+/* small visual polish */
+.stat-box .icon-placeholder {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background: rgba(62,39,35,0.06);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    color: #3E2723;
+    font-weight: 700;
+}

@@ -1,0 +1,37 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Manage Positions - Voting System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/manage_positions.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="positions-container">
+    <div class="positions-header">
+        <h2>Manage Positions</h2>
+        <a href="{% url 'register_position' %}" class="btn-create">Create New Position</a>
+    </div>
+    {% if positions %}
+        <table class="positions-list">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for position in positions %}
+                <tr>
+                    <td>{{ position.position_name }}</td>
+                    <td>{{ position.description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="no-positions">No positions have been created yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

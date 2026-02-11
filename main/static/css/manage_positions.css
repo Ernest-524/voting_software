@@ -1,0 +1,107 @@
+/* Manage positions — responsive, polished table layout */
+
+.positions-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 28px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(62, 39, 35, 0.06);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.positions-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.positions-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #3E2723;
+    font-weight: 800;
+}
+
+/* Table wrapper for horizontal scroll on small screens */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Table styling */
+.positions-list {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    min-width: 600px; /* allows horizontal scroll on narrow screens */
+}
+.positions-list th,
+.positions-list td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0efee;
+    text-align: left;
+    vertical-align: middle;
+    font-size: 0.98rem;
+}
+.positions-list th {
+    background: #3E2723;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-transform: none;
+}
+.positions-list tr:hover td {
+    background: #fbfaf8;
+}
+
+/* Create button */
+.btn-create {
+    background: #3E2723;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.98rem;
+    transition: background 0.18s, transform 0.06s, box-shadow 0.12s;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(62,39,35,0.06);
+}
+.btn-create:hover { background: #4E342E; transform: translateY(-2px); }
+.btn-create:focus { outline: 3px solid rgba(62,39,35,0.06); outline-offset: 3px; }
+
+/* Empty state */
+.no-positions {
+    color: #666;
+    text-align: center;
+    padding: 22px 0;
+    font-size: 1rem;
+}
+
+/* Small screens: tighten spacing and allow scroll */
+@media (max-width: 720px) {
+    .positions-container { padding: 14px; margin: 18px auto; }
+    .positions-header h2 { font-size: 1.1rem; }
+    .positions-list th, .positions-list td { padding: 10px 8px; font-size: 0.95rem; }
+    .positions-list { min-width: 520px; }
+}
+
+/* Very small screens: make rows easier to read (use scroll) */
+@media (max-width: 420px) {
+    .positions-container { padding: 12px; }
+    .btn-create { padding: 9px 12px; font-size: 0.95rem; }
+}
+
+/* Optional: accessible focus states for table rows */
+.positions-list tr:focus-within td,
+.positions-list tr:active td {
+    background: #fff9f4;
+    outline: none;
+}

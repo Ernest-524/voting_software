@@ -1,0 +1,325 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load time_filters %}
+
+{% block title %}Admin Home - Voting System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<link rel="stylesheet" href="{% static 'css/admin_home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="homepage-container">
+    <h2>Welcome, {{ user.first_name }} (Admin)!</h2>
+    <p>Use the options below to manage the voting system.</p>
+    
+    <!-- Current Time Display -->
+    <div class="current-time" id="current-time">
+        <i class="fas fa-clock"></i> Loading server time...
+    </div>
+    
+    <!-- ====== ELECTION STATUS CARD ====== -->
+    <div class="election-status-card {% if election_settings.get_voting_status %}active{% else %}inactive{% endif %}">
+        <div class="status-header">
+            <div>
+                <div class="status-indicator {% if election_settings.get_voting_status %}status-active{% else %}status-inactive{% endif %}">
+                    {% if election_settings.get_voting_status %}
+                        <i class="fas fa-check-circle"></i> ELECTION IS ACTIVE
+                    {% else %}
+                        <i class="fas fa-times-circle"></i> ELECTION IS INACTIVE
+                    {% endif %}
+                </div>
+                <div class="election-name">
+                    {{ election_settings.election_name }}
+                </div>
+            </div>
+            <div class="status-badge {% if election_settings.is_manual_override %}manual{% endif %}">
+                {% if election_settings.is_manual_override %}
+                    <i class="fas fa-hand-paper"></i> Manual Mode
+                {% else %}
+                    <i class="fas fa-robot"></i> Scheduled Mode
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Time Information -->
+        <div class="time-info">
+            {% if election_settings.get_voting_status %}
+                <!-- Active Election Info -->
+                <div class="time-row">
+                    <span class="time-label">Time Remaining:</span>
+                    <span class="time-value text-success">
+                        {% with remaining=election_settings.get_remaining_time %}
+                            {% if remaining %}
+                                {% with end_time=now|add:remaining %}
+                                    <i class="fas fa-clock"></i> {{ end_time|timeuntil }}
+                                {% endwith %}
+                            {% else %}
+                                No end time set
+                            {% endif %}
+                        {% endwith %}
+                    </span>
+                </div>
+                
+                {% if election_settings.is_manual_override %}
+                    <div class="time-row">
+                        <span class="time-label">Started Manually:</span>
+                        <span class="time-value">
+                            {{ election_settings.manual_start_time|timesince }} ago
+                        </span>
+                    </div>
+                {% elif election_settings.scheduled_start %}
+                    <div class="time-row">
+                        <span class="time-label">Started Automatically:</span>
+                        <span class="time-value">
+                            {{ election_settings.scheduled_start|timesince }} ago
+                        </span>
+                    </div>
+                {% endif %}
+            {% else %}
+                <!-- Inactive Election Info -->
+                {% if election_settings.scheduled_start %}
+                    <div class="time-row">
+                        <span class="time-label">Next Scheduled Start:</span>
+                        <span class="time-value">
+                            {{ election_settings.scheduled_start|date:"M j, Y, g:i a" }}
+                        </span>
+                    </div>
+                    <div class="time-row">
+                        <span class="time-label">Time Until Start:</span>
+                        <span class="time-value">
+                            {{ election_settings.scheduled_start|timeuntil }}
+                        </span>
+                    </div>
+                {% else %}
+                    <div class="time-row">
+                        <span class="time-label">No Schedule Set</span>
+                        <span class="time-value text-danger">
+                            <i class="fas fa-exclamation-triangle"></i> Click "Manage Election" to set schedule
+                        </span>
+                    </div>
+                {% endif %}
+            {% endif %}
+            
+            <!-- Last Updated -->
+            <div class="time-row last-updated">
+                <span class="time-label">Last Updated:</span>
+                <span class="time-value">
+                    {{ election_settings.updated_at|timesince }} ago
+                </span>
+            </div>
+        </div>
+        
+        <!-- Quick Election Actions -->
+        <div class="quick-election-actions">
+            <a href="{% url 'start_election' %}" 
+               class="election-action-btn btn-start"
+               onclick="return confirm('Start election NOW? This will override any schedule.')">
+                <i class="fas fa-play-circle"></i> Start Election
+            </a>
+            
+            <a href="{% url 'stop_election' %}" 
+               class="election-action-btn btn-stop"
+               onclick="return confirm('Stop election NOW? This will end voting immediately.')">
+                <i class="fas fa-stop-circle"></i> Stop Election
+            </a>
+            
+            <a href="{% url 'manage_election' %}" 
+               class="election-action-btn btn-manage">
+                <i class="fas fa-cog"></i> Manage Election
+            </a>
+            
+            <a href="{% url 'vote' %}" 
+               class="election-action-btn btn-view" target="_blank">
+                <i class="fas fa-eye"></i> View Voting Page
+            </a>
+        </div>
+    </div>
+    <!-- ====== END ELECTION STATUS CARD ====== -->
+    
+    <!-- ====== CREDENTIALS SECTION ====== -->
+    <div class="credentials-section">
+        <div class="credentials-header">
+            <h4><i class="fas fa-envelope"></i> User Credentials Management</h4>
+            <div class="credentials-actions">
+                <a href="{% url 'send_credentials' %}" class="btn-credentials btn-send">
+                    <i class="fas fa-paper-plane"></i> Send Credentials
+                </a>
+                <a href="{% url 'test_email' %}" class="btn-credentials btn-test">
+                    <i class="fas fa-vial"></i> Test Email
+                </a>
+            </div>
+        </div>
+        <p class="credentials-description">
+            Send login credentials to all registered voters via email. Each user will receive their username and a generated password.
+            <br><small><i class="fas fa-info-circle"></i> Total users: {{ total_voters }}</small>
+        </p>
+    </div>
+    <!-- ====== END CREDENTIALS SECTION ====== -->
+    
+    <!-- Statistics Overview -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_voters }}</div>
+            <div class="stat-label">Total Voters</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-number">{{ voted_count }}</div>
+            <div class="stat-label">Have Voted</div>
+            {% if total_voters > 0 %}
+                <div class="participation">
+                    {{ voted_count|floatformat:0 }}% participation
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-number">{{ not_voted_count }}</div>
+            <div class="stat-label">Not Voted</div>
+            {% if total_voters > 0 %}
+                <div class="remaining">
+                    {{ not_voted_count|floatformat:0 }}% remaining
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-number">{{ positions_count }}</div>
+            <div class="stat-label">Positions</div>
+            <div class="candidate-info">
+                {{ candidates_count }} candidates
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Actions Grid -->
+    <div class="homepage-actions">
+        <a href="{% url 'manage_vote_dashboard' %}" class="btn votes">
+            <i class="fas fa-chart-bar"></i>
+            <span>Manage Votes</span>
+            <small>View voting dashboard</small>
+        </a>
+        
+        <a href="{% url 'manage_positions' %}" class="btn positions">
+            <i class="fas fa-briefcase"></i>
+            <span>Manage Positions</span>
+            <small>Add/edit positions</small>
+        </a>
+        
+        <a href="{% url 'manage_candidates' %}" class="btn candidates">
+            <i class="fas fa-users"></i>
+            <span>Manage Candidates</span>
+            <small>Register candidates</small>
+        </a>
+        
+        <a href="{% url 'voter_list' %}" class="btn voters">
+            <i class="fas fa-user-friends"></i>
+            <span>Voter List</span>
+            <small>View all voters</small>
+        </a>
+        
+        <a href="{% url 'vote_results' %}" class="btn results">
+            <i class="fas fa-poll"></i>
+            <span>Vote Results</span>
+            <small>View election results</small>
+        </a>
+        
+        <a href="{% url 'manage_election' %}" class="btn election">
+            <i class="fas fa-cog"></i>
+            <span>Election Settings</span>
+            <small>Configure election</small>
+        </a>
+        
+        <!-- Send Credentials Button -->
+        <a href="{% url 'send_credentials' %}" class="btn credentials">
+            <i class="fas fa-envelope"></i>
+            <span>Send Credentials</span>
+            <small>Email passwords to users</small>
+        </a>
+    </div>
+</div>
+
+<script>
+// Update current time display
+function updateCurrentTime() {
+    var now = new Date();
+    var timeStr = now.toLocaleString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
+    document.getElementById('current-time').innerHTML = 
+        '<i class="fas fa-clock"></i> Current Server Time: ' + timeStr;
+}
+
+// Initial update
+updateCurrentTime();
+// Update every second
+setInterval(updateCurrentTime, 1000);
+
+// Auto-refresh page every 60 seconds to update election status
+setTimeout(function() {
+    location.reload();
+}, 60000); // 60 seconds
+
+// Confirmations for start/stop actions
+document.querySelectorAll('.btn-start').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        if (!confirm('Are you sure you want to START the election?\n\nThis will override any schedule.')) {
+            e.preventDefault();
+        }
+    });
+});
+
+document.querySelectorAll('.btn-stop').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        if (!confirm('Are you sure you want to STOP the election?\n\nThis will end voting immediately.')) {
+            e.preventDefault();
+        }
+    });
+});
+
+// Load Font Awesome if not loaded
+if (!document.querySelector('link[href*="font-awesome"]')) {
+    var faLink = document.createElement('link');
+    faLink.rel = 'stylesheet';
+    faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+    document.head.appendChild(faLink);
+}
+
+// Confirmation for sending credentials
+document.querySelectorAll('.btn-send').forEach(function(btn) {
+    if (btn.href.includes('send_credentials')) {
+        btn.addEventListener('click', function(e) {
+            if (!confirm('Send credentials to ALL users?\n\nThis will generate new passwords and send emails.')) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+
+// Add smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            window.scrollTo({
+                top: targetElement.offsetTop - 20,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

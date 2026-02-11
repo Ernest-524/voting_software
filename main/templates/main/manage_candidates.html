@@ -1,0 +1,32 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Manage Candidates - Voting System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/manage_candidates.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="candidates-container">
+    <div class="candidates-header">
+        <h2>Manage Candidates</h2>
+        <a href="{% url 'register_candidate' %}" class="btn-create">Add New Candidate</a>
+    </div>
+    {% for position in positions %}
+        <h3>{{ position.position_name }}</h3>
+        {% if position.candidate_position.all %}
+        <div class="candidate-grid">
+            {% for candidate in position.candidate_position.all %}
+            <div class="candidate-card">
+                <img src="{{ candidate.photo.url }}" alt="{{ candidate.candidate_name.get_full_name }}" class="candidate-photo">
+                <div class="candidate-name">{{ candidate.candidate_name.first_name }} {{ candidate.candidate_name.last_name }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <div class="no-candidates">No candidates for this position yet.</div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,214 @@
+/* --- Base / Global styles (responsive-first) --- */
+
+:root{
+  --brand-dark: #4E342E;
+  --brand-dark-2: #3E2723;
+  --success: #388E3C;
+  --danger: #C62828;
+  --info: #1976D2;
+  --page-bg: #ffffff;
+  --text: #333;
+  --max-container: 1100px;
+  --gutter: 16px;
+  --radius: 8px;
+}
+
+/* Global reset + typography */
+*{box-sizing: border-box}
+html,body{height:100%}
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--page-bg);
+    color: var(--text);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    line-height:1.45;
+    font-size:16px;
+}
+
+/* Fluid page container with gutters */
+.container {
+  width: 100%;
+  max-width: var(--max-container);
+  margin: 0 auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+/* Header / nav */
+.header {
+    background-color: var(--brand-dark);
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap; /* allow wrapping on small screens */
+}
+
+/* left side: logo + title */
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+/* logo sizing is responsive */
+.logo {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex: 0 0 48px;
+}
+
+.company-name {
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* nav area */
+.nav-bar {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: background 0.18s, transform 0.08s;
+    white-space: nowrap;
+}
+
+.nav-link:hover {
+    background: var(--brand-dark-2);
+    transform: translateY(-1px);
+}
+
+/* logout as a button-style link */
+.logout-link {
+    background: none;
+    border: none;
+    margin-left: 0;
+    cursor: pointer;
+    color: #fff;
+}
+
+/* Messages area */
+#messages-container {
+    width: 100%;
+    max-width: 760px;
+    margin: 18px auto 0 auto;
+    position: relative;
+    z-index: 100;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+}
+
+.message {
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-size: 0.98rem;
+    color: #fff;
+    background: var(--brand-dark-2);
+    box-shadow: 0 2px 8px rgba(62,39,35,0.08);
+    opacity: 0.98;
+    animation: fadeOutMsg 4s forwards;
+}
+
+.message.success { background: var(--success); }
+.message.error, .message.danger { background: var(--danger); }
+.message.info { background: var(--info); }
+
+@keyframes fadeOutMsg {
+    0% { opacity: 0.98; }
+    80% { opacity: 0.98; }
+    100% { opacity: 0; display: none; }
+}
+
+/* Utility helpers */
+.text-center { text-align: center; }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+
+.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  background: var(--brand-dark-2);
+  color: #fff;
+}
+
+/* Form elements default */
+input[type="text"], input[type="password"], input[type="email"], textarea, select {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+label { display:block; margin-bottom:6px; color: #333; font-weight:600; }
+
+/* --- Responsive adjustments (mobile-first then scale up) --- */
+/* Small screens tweaks */
+@media (max-width: 479px) {
+  .company-name { font-size: 18px; }
+  .logo { width: 42px; height: 42px; }
+  .nav-link { padding: 8px 10px; font-size: 0.92rem; }
+  #messages-container { padding-left: 10px; padding-right: 10px; }
+  .container { padding-left: 12px; padding-right: 12px; }
+}
+
+/* Medium screens (tablets / small laptops) */
+@media (min-width: 480px) and (max-width: 719px) {
+  .company-name { font-size: 20px; }
+  .logo { width: 46px; height: 46px; }
+  .nav-link { padding: 8px 12px; }
+  .container { padding-left: 14px; padding-right: 14px; }
+}
+
+/* Desktop */
+@media (min-width: 720px) {
+  .company-name { font-size: 22px; }
+  .logo { width: 50px; height: 50px; }
+  .nav-link { padding: 8px 16px; }
+  .container { padding-left: 18px; padding-right: 18px; }
+}
+
+/* Wide screens */
+@media (min-width: 1024px) {
+  .company-name { font-size: 24px; }
+  .container { max-width: 1200px; padding-left: 20px; padding-right: 20px; }
+}
+
+/* small helper: make images responsive everywhere */
+img { max-width: 100%; height: auto; display: inline-block; }
+
+/* keep tables responsive when used */
+.table-responsive { overflow-x:auto; width:100%; }
+
+/* Accessibility: focus outlines */
+a:focus, button:focus, input:focus { outline: 3px solid rgba(62,39,35,0.12); outline-offset: 2px; }
+
+/* End of file */

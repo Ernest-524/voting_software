@@ -1,0 +1,41 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Register Candidate - Voting System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/register_candidate.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="register-candidate-container">
+    <h2>Register New Candidate</h2>
+    <div class="search-container">
+        <input type="text" id="candidate-search" placeholder="Search candidate name..." class="search-box">
+    </div>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register Candidate</button>
+    </form>
+</div>
+
+<script>
+    // Add styling to all select boxes
+    document.querySelectorAll('select').forEach(function(el) {
+        el.classList.add('select-box');
+    });
+
+    // Only filter candidate name select options
+    document.getElementById('candidate-search').addEventListener('input', function() {
+        var search = this.value.toLowerCase();
+        var candidateSelect = document.getElementById('id_candidate_name');
+        if (candidateSelect) {
+            candidateSelect.querySelectorAll('option').forEach(function(option) {
+                var candidateName = option.textContent.toLowerCase();
+                option.style.display = candidateName.includes(search) ? '' : 'none';
+            });
+        }
+    });
+</script>
+{% endblock %}

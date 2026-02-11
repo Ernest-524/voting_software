@@ -1,0 +1,55 @@
+<!-- filepath: main/templates/main/candidate_voters.html -->
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}Voters for {{ candidate.candidate_name.first_name }} {{ candidate.candidate_name.last_name }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/candidate_voters.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="candidate-voters-container">
+    <div class="header-row">
+        <div class="candidate-summary">
+            <img src="{{ candidate.photo.url }}" class="candidate-photo" alt="{{ candidate.candidate_name.first_name }}">
+            <div class="candidate-meta">
+                <div class="candidate-title">{{ candidate.candidate_name.first_name }} {{ candidate.candidate_name.last_name }}</div>
+                <div class="candidate-position">{{ candidate.candidate_position.position_name }}</div>
+            </div>
+        </div>
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value">{{ votes|length }}</div>
+                <div class="stat-label">Total Voters</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-wrap">
+        <table class="voters-table">
+            <thead>
+                <tr>
+                    <th>Staff ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Position</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vote in votes %}
+                <tr>
+                    <td>{{ vote.voter.username }}</td>
+                    <td>{{ vote.voter.first_name }}</td>
+                    <td>{{ vote.voter.last_name }}</td>
+                    <td>{{ vote.position.position_name }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="no-voters">No voters for this candidate yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

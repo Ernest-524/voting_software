@@ -1,0 +1,753 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load time_filters %}
+
+{% block title %}Election Management - Voting System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<style>
+    .election-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .status-card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border: 3px solid;
+        border-color: {% if election_settings.get_voting_status %}#28a745{% else %}#dc3545{% endif %};
+    }
+    
+    .status-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .status-indicator {
+        font-size: 1.4em;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .status-active {
+        color: #28a745;
+    }
+    
+    .status-inactive {
+        color: #dc3545;
+    }
+    
+    .quick-actions {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .btn-action {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+    
+    .btn-action:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        text-decoration: none;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #3E2723, #5D4037);
+        color: white;
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+    }
+    
+    .btn-danger {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d, #495057);
+        color: white;
+    }
+    
+    .btn-info {
+        background: linear-gradient(135deg, #17a2b8, #138496);
+        color: white;
+    }
+    
+    .time-display {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+    }
+    
+    .time-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .time-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .time-label {
+        color: #666;
+        font-weight: 500;
+        min-width: 200px;
+    }
+    
+    .time-value {
+        font-weight: 600;
+        color: #333;
+        text-align: right;
+        flex: 1;
+    }
+    
+    .settings-form {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-top: 30px;
+    }
+    
+    .form-section {
+        margin-bottom: 30px;
+        padding-bottom: 25px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .form-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    
+    .section-title {
+        color: #3E2723;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-group input[type="text"],
+    .form-group input[type="datetime-local"],
+    .form-group select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: all 0.3s;
+    }
+    
+    .form-group input[type="text"]:focus,
+    .form-group input[type="datetime-local"]:focus,
+    .form-group select:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        outline: none;
+    }
+    
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+    
+    .checkbox-group label {
+        margin-bottom: 0;
+        cursor: pointer;
+        font-weight: 500;
+    }
+    
+    .help-text {
+        color: #6c757d;
+        font-size: 0.9em;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    .error-message {
+        color: #dc3545;
+        font-size: 0.9em;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    .form-actions {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 2px solid #f0f0f0;
+    }
+    
+    .info-box {
+        background: #e3f2fd;
+        border-left: 5px solid #2196F3;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+    
+    .info-box h4 {
+        color: #0d47a1;
+        margin-top: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .warning-box {
+        background: #fff3cd;
+        border-left: 5px solid #ffc107;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+    
+    .warning-box h4 {
+        color: #856404;
+        margin-top: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .current-time-display {
+        text-align: center;
+        background: #e9ecef;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+        font-family: monospace;
+        font-size: 1.1em;
+        color: #495057;
+        border: 2px solid #dee2e6;
+    }
+    
+    @media (max-width: 768px) {
+        .header-section {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+        
+        .quick-actions {
+            justify-content: center;
+        }
+        
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .time-row {
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .time-label {
+            min-width: auto;
+        }
+        
+        .time-value {
+            text-align: left;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="election-container">
+    <div class="header-section">
+        <div>
+            <h2>Election Management</h2>
+            <p style="color: #666;">Configure election timing and settings</p>
+        </div>
+        <div class="quick-actions">
+            <a href="{% url 'admin_homepage' %}" class="btn-action btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Admin
+            </a>
+            <a href="{% url 'vote' %}" class="btn-action btn-info" target="_blank">
+                <i class="fas fa-eye"></i> View Voting Page
+            </a>
+        </div>
+    </div>
+    
+    <!-- Current Server Time -->
+    <div class="current-time-display" id="current-time">
+        <i class="fas fa-clock"></i> Loading server time...
+    </div>
+    
+    <!-- Status Card -->
+    <div class="status-card">
+        <div class="status-header">
+            <div>
+                <div class="status-indicator {% if election_settings.get_voting_status %}status-active{% else %}status-inactive{% endif %}">
+                    {% if election_settings.get_voting_status %}
+                        <i class="fas fa-check-circle"></i> ELECTION IS ACTIVE
+                    {% else %}
+                        <i class="fas fa-times-circle"></i> ELECTION IS INACTIVE
+                    {% endif %}
+                </div>
+                <div style="margin-top: 5px; color: #666;">
+                    {{ election_settings.election_name }}
+                    <span style="margin-left: 15px; padding: 4px 10px; background: #e9ecef; border-radius: 4px; font-size: 0.9em;">
+                        {% if election_settings.is_manual_override %}
+                            <i class="fas fa-hand-paper"></i> Manual Mode
+                        {% else %}
+                            <i class="fas fa-robot"></i> Scheduled Mode
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="quick-actions">
+                <a href="{% url 'start_election' %}" 
+                   class="btn-action btn-success"
+                   onclick="return confirm('Start election NOW? This will override any schedule.')">
+                    <i class="fas fa-play-circle"></i> Start Election
+                </a>
+                <a href="{% url 'stop_election' %}" 
+                   class="btn-action btn-danger"
+                   onclick="return confirm('Stop election NOW? This will end voting immediately.')">
+                    <i class="fas fa-stop-circle"></i> Stop Election
+                </a>
+            </div>
+        </div>
+        
+        <!-- Time Information -->
+        <div class="time-display">
+            {% if election_settings.get_voting_status %}
+                <!-- Active Election -->
+                <div class="time-row">
+                    <span class="time-label">Current Status:</span>
+                    <span class="time-value" style="color: #28a745; font-weight: 700;">
+                        <i class="fas fa-check-circle"></i> Voting is ACTIVE
+                    </span>
+                </div>
+                {% with remaining=election_settings.get_remaining_time %}
+                    {% if remaining %}
+                        <div class="time-row">
+                            <span class="time-label">Time Remaining:</span>
+                            <span class="time-value" style="color: #17a2b8;">
+                                <i class="fas fa-clock"></i> {{ remaining|time_remaining }}
+                            </span>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+                {% if election_settings.is_manual_override %}
+                    <div class="time-row">
+                        <span class="time-label">Started Manually:</span>
+                        <span class="time-value">
+                            {{ election_settings.manual_start_time|date:"M j, Y, g:i a" }}
+                            <small style="color: #666;">({{ election_settings.manual_start_time|timesince }} ago)</small>
+                        </span>
+                    </div>
+                {% elif election_settings.scheduled_start %}
+                    <div class="time-row">
+                        <span class="time-label">Started Automatically:</span>
+                        <span class="time-value">
+                            {{ election_settings.scheduled_start|date:"M j, Y, g:i a" }}
+                            <small style="color: #666;">({{ election_settings.scheduled_start|timesince }} ago)</small>
+                        </span>
+                    </div>
+                {% endif %}
+            {% else %}
+                <!-- Inactive Election -->
+                <div class="time-row">
+                    <span class="time-label">Current Status:</span>
+                    <span class="time-value" style="color: #dc3545; font-weight: 700;">
+                        <i class="fas fa-times-circle"></i> Voting is INACTIVE
+                    </span>
+                </div>
+                {% if election_settings.scheduled_start %}
+                    <div class="time-row">
+                        <span class="time-label">Next Scheduled Start:</span>
+                        <span class="time-value">
+                            {{ election_settings.scheduled_start|date:"M j, Y, g:i a" }}
+                            <small style="color: #666;">(in {{ election_settings.scheduled_start|timeuntil }})</small>
+                        </span>
+                    </div>
+                {% endif %}
+                {% if election_settings.scheduled_end %}
+                    <div class="time-row">
+                        <span class="time-label">Scheduled End:</span>
+                        <span class="time-value">
+                            {{ election_settings.scheduled_end|date:"M j, Y, g:i a" }}
+                        </span>
+                    </div>
+                {% endif %}
+            {% endif %}
+            <div class="time-row">
+                <span class="time-label">Last Updated:</span>
+                <span class="time-value">
+                    {{ election_settings.updated_at|date:"M j, Y, g:i a" }}
+                    <small style="color: #666;">({{ election_settings.updated_at|timesince }} ago)</small>
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Information Boxes -->
+    {% if election_settings.is_manual_override %}
+        <div class="warning-box">
+            <h4><i class="fas fa-exclamation-triangle"></i> Manual Override Active</h4>
+            <p>Manual override is enabled. Scheduled times are being ignored. Use the Start/Stop buttons above to control the election.</p>
+            <p style="margin-top: 10px; font-weight: 500;">
+                To return to scheduled mode, uncheck "Use Manual Override" below and save.
+            </p>
+        </div>
+    {% else %}
+        <div class="info-box">
+            <h4><i class="fas fa-info-circle"></i> Scheduled Mode Active</h4>
+            <p>The election will start and stop automatically based on the scheduled times below.</p>
+            <p style="margin-top: 10px; font-weight: 500;">
+                Use manual override only for emergencies or unexpected changes.
+            </p>
+        </div>
+    {% endif %}
+    
+    <!-- Settings Form -->
+    <div class="settings-form">
+        <h3 class="section-title"><i class="fas fa-sliders-h"></i> Election Settings</h3>
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h4><i class="fas fa-info-circle"></i> Basic Information</h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="{{ form.election_name.id_for_label }}">
+                            <i class="fas fa-signature"></i> Election Name
+                        </label>
+                        {{ form.election_name }}
+                        {% if form.election_name.help_text %}
+                            <span class="help-text">{{ form.election_name.help_text }}</span>
+                        {% endif %}
+                        {% if form.election_name.errors %}
+                            <span class="error-message">{{ form.election_name.errors }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Operation Mode -->
+            <div class="form-section">
+                <h4><i class="fas fa-toggle-on"></i> Operation Mode</h4>
+                <div class="form-grid">
+                    <div class="checkbox-group">
+                        {{ form.is_manual_override }}
+                        <label for="{{ form.is_manual_override.id_for_label }}">
+                            Use Manual Override
+                        </label>
+                    </div>
+                    <div class="help-text">
+                        When checked, manual buttons override schedule. When unchecked, scheduled times are used.
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        {{ form.is_active }}
+                        <label for="{{ form.is_active.id_for_label }}">
+                            Active Status
+                        </label>
+                    </div>
+                    <div class="help-text">
+                        Current activity status (updated automatically when using manual buttons).
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Scheduled Timing -->
+            <div class="form-section">
+                <h4><i class="fas fa-calendar-alt"></i> Scheduled Timing</h4>
+                <div class="help-text" style="margin-bottom: 20px;">
+                    <i class="fas fa-info-circle"></i> Set start and end times for automatic operation
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="{{ form.scheduled_start.id_for_label }}">
+                            <i class="fas fa-play"></i> Start Time
+                        </label>
+                        {{ form.scheduled_start }}
+                        {% if form.scheduled_start.help_text %}
+                            <span class="help-text">{{ form.scheduled_start.help_text }}</span>
+                        {% endif %}
+                        {% if form.scheduled_start.errors %}
+                            <span class="error-message">{{ form.scheduled_start.errors }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.scheduled_end.id_for_label }}">
+                            <i class="fas fa-stop"></i> End Time
+                        </label>
+                        {{ form.scheduled_end }}
+                        {% if form.scheduled_end.help_text %}
+                            <span class="help-text">{{ form.scheduled_end.help_text }}</span>
+                        {% endif %}
+                        {% if form.scheduled_end.errors %}
+                            <span class="error-message">{{ form.scheduled_end.errors }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Manual Timing Records -->
+            <div class="form-section">
+                <h4><i class="fas fa-history"></i> Manual Timing Records</h4>
+                <div class="help-text" style="margin-bottom: 20px;">
+                    <i class="fas fa-info-circle"></i> These are automatically set when using manual buttons
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="{{ form.manual_start_time.id_for_label }}">
+                            <i class="fas fa-play-circle"></i> Manual Start Time
+                        </label>
+                        {{ form.manual_start_time }}
+                        {% if election_settings.manual_start_time %}
+                            <span class="help-text">
+                                Last started: {{ election_settings.manual_start_time|date:"M j, Y, g:i a" }}
+                            </span>
+                        {% endif %}
+                        {% if form.manual_start_time.errors %}
+                            <span class="error-message">{{ form.manual_start_time.errors }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.manual_end_time.id_for_label }}">
+                            <i class="fas fa-stop-circle"></i> Manual End Time
+                        </label>
+                        {{ form.manual_end_time }}
+                        {% if election_settings.manual_end_time %}
+                            <span class="help-text">
+                                Last stopped: {{ election_settings.manual_end_time|date:"M j, Y, g:i a" }}
+                            </span>
+                        {% endif %}
+                        {% if form.manual_end_time.errors %}
+                            <span class="error-message">{{ form.manual_end_time.errors }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Errors -->
+            {% if form.errors %}
+                <div class="warning-box">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Form Errors</h4>
+                    <ul style="margin-bottom: 0;">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn-action btn-primary" style="padding: 15px 40px; font-size: 1.1em;">
+                    <i class="fas fa-save"></i> Save Settings
+                </button>
+                <a href="{% url 'admin_homepage' %}" class="btn-action btn-secondary" style="padding: 15px 30px; font-size: 1.1em;">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Information Panel -->
+    <div class="info-box" style="margin-top: 30px;">
+        <h4><i class="fas fa-question-circle"></i> How It Works</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 15px;">
+            <div>
+                <h5 style="color: #28a745; margin-top: 0;">
+                    <i class="fas fa-robot"></i> Scheduled Mode
+                </h5>
+                <ul>
+                    <li>Set specific start and end times</li>
+                    <li>System runs automatically</li>
+                    <li>No manual intervention needed</li>
+                    <li>Best for planned elections</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h5 style="color: #dc3545; margin-top: 0;">
+                    <i class="fas fa-hand-paper"></i> Manual Override
+                </h5>
+                <ul>
+                    <li>Start/Stop buttons take priority</li>
+                    <li>Use for emergencies or delays</li>
+                    <li>Overrides any schedule</li>
+                    <li>Best for unexpected changes</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h5 style="color: #17a2b8; margin-top: 0;">
+                    <i class="fas fa-clock"></i> Time Zones
+                </h5>
+                <ul>
+                    <li>All times are in server timezone</li>
+                    <li>Current server time shown above</li>
+                    <li>Make sure times are correctly set</li>
+                    <li>Test before actual election</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Update current time display
+function updateCurrentTime() {
+    var now = new Date();
+    var timeStr = now.toLocaleString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
+    document.getElementById('current-time').innerHTML = 
+        '<i class="fas fa-clock"></i> Current Server Time: ' + timeStr;
+}
+
+// Initial update
+updateCurrentTime();
+// Update every second
+setInterval(updateCurrentTime, 1000);
+
+// Auto-refresh page every 30 seconds to update status
+setTimeout(function() {
+    location.reload();
+}, 30000); // 30 seconds
+
+// Confirmation for manual override checkbox
+var manualOverrideCheckbox = document.getElementById('{{ form.is_manual_override.id_for_label }}');
+if (manualOverrideCheckbox) {
+    manualOverrideCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            if (!confirm('Enabling Manual Override will ignore scheduled times.\n\nAre you sure?')) {
+                this.checked = false;
+            }
+        }
+    });
+}
+
+// Confirmation for start/stop actions
+document.querySelectorAll('.btn-success').forEach(function(btn) {
+    if (btn.textContent.includes('Start')) {
+        btn.addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to START the election?\n\nThis will override any schedule.')) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+
+document.querySelectorAll('.btn-danger').forEach(function(btn) {
+    if (btn.textContent.includes('Stop')) {
+        btn.addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to STOP the election?\n\nThis will end voting immediately.')) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+
+// Load Font Awesome if not loaded
+if (!document.querySelector('link[href*="font-awesome"]')) {
+    var faLink = document.createElement('link');
+    faLink.rel = 'stylesheet';
+    faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+    document.head.appendChild(faLink);
+}
+
+// Add datetime-local fallback for older browsers
+if (!Modernizr.inputtypes['datetime-local']) {
+    document.querySelectorAll('input[type="datetime-local"]').forEach(function(input) {
+        input.type = 'text';
+        input.placeholder = 'YYYY-MM-DDTHH:MM';
+        input.pattern = '\d{4}-\d{2}-\d{2}T\d{2}:\d{2}';
+    });
+}
+</script>
+{% endblock %}

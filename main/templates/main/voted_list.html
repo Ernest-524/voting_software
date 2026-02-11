@@ -1,0 +1,143 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Voted Users - Voting System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/voted_list.css' %}">
+<style>
+/* fallback styles if you don't want a separate css file yet */
+.voted-list-container {
+    max-width: 980px;
+    margin: 32px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 18px rgba(62,39,35,0.06);
+    padding: 28px;
+}
+.voted-list-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+}
+.voted-list-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.voted-list-table th, .voted-list-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    vertical-align: top;
+}
+.voted-list-table th {
+    background: #3E2723;
+    color: #fff;
+    font-weight: 600;
+}
+.vote-badge {
+    display:inline-block;
+    padding:6px 10px;
+    border-radius: 999px;
+    color:#fff;
+    font-weight:700;
+    font-size:0.85rem;
+    margin-left:8px;
+}
+.vote-badge.yes { background:#2e7d32; }
+.vote-badge.no  { background:#c62828; }
+.vote-item {
+    margin-bottom:8px;
+}
+.empty-note {
+    color:#666;
+    font-style:italic;
+}
+.btn-vote-results, .btn-send-ids {
+    background: #3E2723;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-decoration: none;
+    display: inline-block;
+}
+.btn-vote-results:hover, .btn-send-ids:hover { background:#2E7D32; }
+@media (max-width:720px){
+    .voted-list-table th, .voted-list-table td { padding:10px 6px; font-size:0.92rem; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="voted-list-container">
+    <div class="voted-list-header">
+        <h2>Voters Who Have Cast Their Vote</h2>
+        <div>
+            <a href="{% url 'vote_results' %}" class="btn-vote-results">View Vote Results</a>
+        </div>
+    </div>
+
+    <table class="voted-list-table" role="table" aria-label="List of users who voted">
+        <thead>
+            <tr>
+                <th>Staff ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Votes Cast</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if voted_users %}
+                {% for user in voted_users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.last_name }}</td>
+                        <td>
+                            {# user_votes is expected to be a dict-like mapping user.id -> list/queryset of Vote objects #}
+                            {% with votes=user_votes|get_item:user.id %}
+                                {% if votes %}
+                                    {% for vote in votes %}
+                                        <div class="vote-item">
+                                            <strong>{{ vote.position.position_name }}</strong>:
+                                            {# candidate may be null in some setups; handle gracefully #}
+                                            {% if vote.candidate %}
+                                                {{ vote.candidate.candidate_name.first_name }} {{ vote.candidate.candidate_name.last_name }}
+                                            {% else %}
+                                                <span class="empty-note">No candidate recorded</span>
+                                            {% endif %}
+                                            {# show choice if present (yes/no) otherwise fallback to "cast" #}
+                                            {% if vote.choice %}
+                                                {% if vote.choice == 'yes' %}
+                                                    <span class="vote-badge yes">Yes</span>
+                                                {% elif vote.choice == 'no' %}
+                                                    <span class="vote-badge no">No</span>
+                                                {% else %}
+                                                    <span class="vote-badge">{{ vote.choice }}</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="empty-note">No recorded votes for this user.</div>
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="4" class="empty-note">No users have voted yet.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

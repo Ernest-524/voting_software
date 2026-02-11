@@ -1,0 +1,85 @@
+/* Layout for admin_home actions (responsive) */
+
+:root{
+  --primary:#3E2723;
+  --primary-hover:#2E7D32;
+  --btn-shadow: 0 6px 18px rgba(62,39,35,0.06);
+}
+
+/* container: allow wrapping so buttons stay balanced on various widths */
+.homepage-actions {
+  display: flex;
+  flex-wrap: wrap;               /* wrap to next line when space is tight */
+  gap: 18px;                     /* consistent spacing between buttons */
+  justify-content: center;       /* center the row */
+  align-items: stretch;          /* make children same height in a row */
+  margin-top: 18px;
+  box-sizing: border-box;
+  padding: 0 8px;                /* small horizontal padding to avoid touching edges */
+}
+
+/* Make buttons consistent: they expand equally and have a max width */
+.homepage-actions .btn {
+  flex: 1 1 220px;               /* grow/shrink; basis 220px */
+  max-width: 360px;              /* avoid overly wide buttons on very large screens */
+  min-width: 180px;              /* keep usable width on small-ish screens */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 800;
+  box-shadow: var(--btn-shadow);
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background: var(--primary);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  height: 56px;                   /* consistent height */
+  box-sizing: border-box;
+}
+
+/* If you use anchor tags for .btn, ensure they behave like buttons */
+.homepage-actions .btn[href] { display: inline-flex; }
+
+/* Hover / focus states */
+.homepage-actions .btn:hover,
+.homepage-actions .btn:focus {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(62,39,35,0.10);
+  background: var(--primary-hover);
+  outline: none;
+}
+
+/* Specific visual variants if needed */
+.homepage-actions .btn.secondary {
+  background: #fff;
+  color: #3E2723;
+  border: 1px solid #e6e6e6;
+}
+.homepage-actions .btn.secondary:hover {
+  background: #f6f6f6;
+}
+
+/* Mobile: make each button full width for easier tapping */
+@media (max-width: 720px) {
+  .homepage-actions {
+    gap: 12px;
+    padding: 0;
+  }
+  .homepage-actions .btn {
+    flex-basis: 100%;
+    min-width: 0;
+    max-width: none;
+    height: 52px;
+    padding: 12px 14px;
+  }
+}
+
+/* Small tweak for very large screens */
+@media (min-width: 1400px) {
+  .homepage-actions .btn { max-width: 420px; }
+}
