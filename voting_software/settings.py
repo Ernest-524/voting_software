@@ -27,12 +27,25 @@ SECRET_KEY = 'django-insecure-$cj5pj^dt-kmpi0!qf)q-5rrpiu*0hp)04=@bc$na6-s^@@pxi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['web-production-18c41.up.railway.app']
-CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-18c41.up.railway.app',
-    'http://localhost',
-    'http://127.0.0.1',
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.railway.app',  # This allows all railway.app subdomains
+    'web-production-6c767.up.railway.app',  # Your specific domain
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-6c767.up.railway.app',  # Your Railway domain
+    'https://*.railway.app',  # This allows all railway.app subdomains
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+
+# Also make sure SECURE_PROXY_SSL_HEADER is set for HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = False  # Railway handles SSL, set to True if you want forced HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 
 
@@ -148,3 +161,25 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ernestmpiani15@gmail.com'
 EMAIL_HOST_PASSWORD = 'nocs jmxw ceji tcpc'  # Use app password for Gmail
 DEFAULT_FROM_EMAIL = 'noreply@yourdomain.com'
+
+# In your settings.py, find or add this section:
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '.railway.app',  # This allows all railway.app subdomains
+    'web-production-6c767.up.railway.app',  # Your specific domain
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-6c767.up.railway.app',  # Your Railway domain
+    'https://*.railway.app',  # This allows all railway.app subdomains
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+
+# Also make sure SECURE_PROXY_SSL_HEADER is set for HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = False  # Railway handles SSL, set to True if you want forced HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
