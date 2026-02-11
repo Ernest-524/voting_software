@@ -23,4 +23,5 @@ urlpatterns = [
     path('stop_election/', main_views.stop_election_manual, name='stop_election'),
     path('send-credentials/', main_views.send_credentials_view, name='send_credentials'),
     path('test-email/', main_views.test_email_view, name='test_email'),
+    path('csrf-test/', main_views.csrf_test, name='csrf_test'),
 ]
