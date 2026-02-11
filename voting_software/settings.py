@@ -27,20 +27,24 @@ SECRET_KEY = 'django-insecure-$cj5pj^dt-kmpi0!qf)q-5rrpiu*0hp)04=@bc$na6-s^@@pxi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.railway.app',  # This allows all railway.app subdomains
-    'web-production-6c767.up.railway.app',  # Your specific domain
-]
+# Find the CSRF_TRUSTED_ORIGINS section and REPLACE it with this:
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-6c767.up.railway.app',  # Your Railway domain
-    'https://*.railway.app',  # This allows all railway.app subdomains
+    'https://web-production-6c767.up.railway.app',
+    'http://web-production-6c767.up.railway.app',
+    'https://*.railway.app',
+    'http://*.railway.app',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
 ]
 
+# Also update ALLOWED_HOSTS:
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'web-production-6c767.up.railway.app',
+    '.railway.app',
+]
 # Also make sure SECURE_PROXY_SSL_HEADER is set for HTTPS
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = False  # Railway handles SSL, set to True if you want forced HTTPS
@@ -181,5 +185,29 @@ CSRF_TRUSTED_ORIGINS = [
 # Also make sure SECURE_PROXY_SSL_HEADER is set for HTTPS
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = False  # Railway handles SSL, set to True if you want forced HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# At the VERY END of settings.py, add:
+
+# FORCE THESE SETTINGS - Railway Deployment Fix
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-6c767.up.railway.app',
+    'http://web-production-6c767.up.railway.app',
+    'https://*.railway.app',
+    'http://*.railway.app',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'web-production-6c767.up.railway.app',
+    '.railway.app',
+]
+
+# Also ensure these are set
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
