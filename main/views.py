@@ -548,38 +548,3 @@ def test_email_view(request):
         messages.error(request, f"Failed to send test email: {str(e)}")
     
     return redirect('send_credentials')
-
-from django.http import HttpResponse
-from django.conf import settings
-import sys
-import os
-
-def csrf_test(request):
-    response = f"""
-    <html>
-    <body>
-        <h1>CSRF Settings Debug</h1>
-        <h2>CSRF_TRUSTED_ORIGINS:</h2>
-        <pre>{settings.CSRF_TRUSTED_ORIGINS}</pre>
-        
-        <h2>ALLOWED_HOSTS:</h2>
-        <pre>{settings.ALLOWED_HOSTS}</pre>
-        
-        <h2>Middleware:</h2>
-        <pre>{settings.MIDDLEWARE}</pre>
-        
-        <h2>Debug Mode:</h2>
-        <pre>{settings.DEBUG}</pre>
-        
-        <h2>Settings Module:</h2>
-        <pre>{settings.SETTINGS_MODULE}</pre>
-        
-        <h2>Environment Variables:</h2>
-        <pre>{dict(sorted(dict(os.environ).items()))}</pre>
-        
-        <h2>Request Headers:</h2>
-        <pre>{dict(request.headers)}</pre>
-    </body>
-    </html>
-    """
-    return HttpResponse(response)
