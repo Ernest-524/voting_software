@@ -347,7 +347,6 @@ def candidate_voters(request, candidate_id):
         'voters': voters,
     })
 
-@csrf_protect
 class CustomLoginView(LoginView):
     template_name = 'main/login.html'
 
