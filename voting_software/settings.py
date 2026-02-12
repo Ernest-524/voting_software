@@ -25,31 +25,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$cj5pj^dt-kmpi0!qf)q-5rrpiu*0hp)04=@bc$na6-s^@@pxi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Production Settings (Railway)
 
-# Find the CSRF_TRUSTED_ORIGINS section and REPLACE it with this:
+DEBUG = False
+
+ALLOWED_HOSTS = [
+    'web-production-6c767.up.railway.app',
+]
 
 CSRF_TRUSTED_ORIGINS = [
     'https://web-production-6c767.up.railway.app',
-    'http://web-production-6c767.up.railway.app',
-    'https://*.railway.app',
-    'http://*.railway.app',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
 ]
 
-# Also update ALLOWED_HOSTS:
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'web-production-6c767.up.railway.app',
-    '.railway.app',
-]
-# Also make sure SECURE_PROXY_SSL_HEADER is set for HTTPS
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = False  # Railway handles SSL, set to True if you want forced HTTPS
+
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+
+SECURE_SSL_REDIRECT = False  # Railway handles SSL
 
 
 
@@ -155,8 +148,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-ALLOWED_HOSTS = ['*']
-
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # or your SMTP server
@@ -165,45 +156,3 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ernestmpiani15@gmail.com'
 EMAIL_HOST_PASSWORD = 'nocs jmxw ceji tcpc'  # Use app password for Gmail
 DEFAULT_FROM_EMAIL = 'noreply@yourdomain.com'
-
-
-# ============== RAILWAY DEPLOYMENT FIX ==============
-# This MUST be at the bottom of the file and have NO DUPLICATES
-
-# CSRF Trusted Origins - CRITICAL for login to work
-CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-6c767.up.railway.app',
-    'http://web-production-6c767.up.railway.app',
-    'https://*.railway.app',
-    'http://*.railway.app',
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
-]
-
-# Allowed Hosts
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'web-production-6c767.up.railway.app',
-    '.railway.app',
-]
-
-# Security Settings
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = False  # Railway handles SSL
-
-# IMPORTANT: Remove this line if it exists anywhere else in the file!
-# ALLOWED_HOSTS = ['*']  <-- DELETE THIS LINE
-
-# DEBUG must be FALSE in production
-DEBUG = False  # CHANGE THIS to False
-
-print("=" * 50)
-print("RAILWAY SETTINGS LOADED - CSRF FIX APPLIED")
-print(f"CSRF_TRUSTED_ORIGINS: {CSRF_TRUSTED_ORIGINS}")
-print(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")
-print(f"DEBUG: {DEBUG}")
-print("=" * 50)
-# ====================================================
