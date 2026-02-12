@@ -15,7 +15,7 @@
 <form method="POST">
     {% csrf_token %}
     <div class="form-group">
-        <label for="username">Staff ID</label>
+        <label for="username">NSS number: </label>
         <input type="text" id="username" name="username" placeholder="Enter your staff ID" required value="{{ form.username.value|default_if_none:'' }}">
     </div>
 
