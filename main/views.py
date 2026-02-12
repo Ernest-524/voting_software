@@ -21,6 +21,9 @@ from reportlab.lib.styles import getSampleStyleSheet
 from django.contrib.admin.views.decorators import staff_member_required
 from .utils import send_credentials_to_all_users
 import time
+from django.views.decorators.csrf import csrf_protect
+from django.middleware.csrf import get_token
+
 
 
 # Create your views here.
@@ -344,7 +347,7 @@ def candidate_voters(request, candidate_id):
         'voters': voters,
     })
 
-
+@csrf_protect
 class CustomLoginView(LoginView):
     template_name = 'main/login.html'
 
